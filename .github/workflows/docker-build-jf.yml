@@ -54,7 +54,7 @@ jobs:
         run: |
           # Sammeln aller relevanten Build-Informationen
           jf rt build-add-git
-          jf rt build-add-env
+          jf rt build-collect-env
           jf rt build-collect-issues
     
           # Veröffentlichen mit erweiterten Metadaten
