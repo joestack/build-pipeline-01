@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4 #  v2
 
       - name: Setup JFrog CLI
         uses: jfrog/setup-jfrog-cli@v4
@@ -24,7 +24,20 @@ jobs:
         run: |
           jf docker build -t $IMAGE_NAME .
           jf docker push $IMAGE_NAME
-          
+     
+     #new     
+      - name: Run Xray Scan
+        run: |
+          jf docker scan image-name:latest \
+            --format json \
+            --fail=false \
+            --output scan-results.json
+    
+     ##
+
+
+
+
       - name: Publish Build info With JFrog CLI
         env:
           # Generated and maintained by GitHub
