@@ -55,7 +55,6 @@ jobs:
           # Sammeln aller relevanten Build-Informationen
           jf rt build-add-git
           jf rt build-collect-env
-          jf rt build-collect-issues
     
           # Veröffentlichen mit erweiterten Metadaten
           jf rt build-publish \
