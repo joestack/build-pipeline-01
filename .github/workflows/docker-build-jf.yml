@@ -27,6 +27,8 @@ jobs:
      
      #new     
       - name: Run Xray Scan
+        env:
+          IMAGE_NAME: trial3i8n2w.jfrog.io/petclinic-docker/jfrog-docker-example-image:${{ github.run_number }}
         run: |
           jf docker scan $IMAGE_NAME \
             --format json \
