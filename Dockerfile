@@ -5,7 +5,7 @@ COPY mvnw pom.xml ./
 RUN chmod +x mvnw
 RUN ./mvnw dependency:go-offline
 COPY src ./src
-RUN ./mvnw package -DskipTests
+RUN ./mvnw package -DskipTests --debug
 
 FROM eclipse-temurin:17-jre-jammy
 COPY --from=builder /app/target/*.jar /app/spring-petclinic.jar
