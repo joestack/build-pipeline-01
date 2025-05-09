@@ -28,7 +28,7 @@ jobs:
      #new     
       - name: Run Xray Scan
         run: |
-          jf docker scan image-name:latest \
+          jf docker scan $IMAGE_NAME \
             --format json \
             --fail=false \
             --output scan-results.json
