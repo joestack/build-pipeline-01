@@ -71,30 +71,30 @@ jobs:
           # Führe Xray Scan durch und speichere Ergebnisse als JSON
           jf docker scan $IMAGE_NAME --format=json > xray-results.json
 
-      - name: Generate Scan Report
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const results = JSON.parse(fs.readFileSync('xray-results.json', 'utf8'));
+      # - name: Generate Scan Report
+      #   uses: actions/github-script@v7
+      #   with:
+      #     script: |
+      #       const fs = require('fs');
+      #       const results = JSON.parse(fs.readFileSync('xray-results.json', 'utf8'));
             
-            let summary = `## JFrog Xray Scan Ergebnisse\n\n`;
-            summary += `### Gefundene Schwachstellen:\n`;
-            summary += `- Kritisch: ${results.summary.critical || 0}\n`;
-            summary += `- Hoch: ${results.summary.high || 0}\n`;
-            summary += `- Mittel: ${results.summary.medium || 0}\n`;
-            summary += `- Niedrig: ${results.summary.low || 0}\n\n`;
+      #       let summary = `## JFrog Xray Scan Ergebnisse\n\n`;
+      #       summary += `### Gefundene Schwachstellen:\n`;
+      #       summary += `- Kritisch: ${results.summary.critical || 0}\n`;
+      #       summary += `- Hoch: ${results.summary.high || 0}\n`;
+      #       summary += `- Mittel: ${results.summary.medium || 0}\n`;
+      #       summary += `- Niedrig: ${results.summary.low || 0}\n\n`;
             
-            if (results.vulnerabilities) {
-              summary += `### Details:\n`;
-              results.vulnerabilities.forEach(vuln => {
-                summary += `- **${vuln.severity}**: ${vuln.id} - ${vuln.description}\n`;
-              });
-            }
+      #       if (results.vulnerabilities) {
+      #         summary += `### Details:\n`;
+      #         results.vulnerabilities.forEach(vuln => {
+      #           summary += `- **${vuln.severity}**: ${vuln.id} - ${vuln.description}\n`;
+      #         });
+      #       }
             
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: summary
-            });
+      #       await github.rest.issues.createComment({
+      #         issue_number: context.issue.number,
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         body: summary
+      #       });
