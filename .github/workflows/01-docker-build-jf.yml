@@ -70,6 +70,12 @@ jobs:
         run: |
           # Führe Xray Scan durch und speichere Ergebnisse als JSON
           jf docker scan $IMAGE_NAME --format=json > xray-results.json
+      
+      - name: Upload scan results
+        uses: actions/upload-artifact@v3
+        with:
+          name: xray-scan-results
+          path: xray-results.json
 
       # - name: Generate Scan Report
       #   uses: actions/github-script@v7
