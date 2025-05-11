@@ -26,14 +26,6 @@ jobs:
           # Build steps here
           ./gradlew clean build test
 
-      - name: Security Scan
-        run: |
-          jf docker scan $IMAGE_NAME
-
-      - name: Upload to Artifactory
-        run: |
-          jf rt upload "build/libs/*.jar" my-repo/
-
       - name: Build Tag and push Docker Image
         env:
           IMAGE_NAME: trial3i8n2w.jfrog.io/petclinic-docker/jfrog-docker-example-image:${{ github.run_number }}
