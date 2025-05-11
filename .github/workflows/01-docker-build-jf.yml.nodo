@@ -28,21 +28,21 @@ jobs:
           jf docker build -t $IMAGE_NAME .
           jf docker push $IMAGE_NAME
        
-      - name: Run Xray Scan
-        env:
-          IMAGE_NAME: trial3i8n2w.jfrog.io/petclinic-docker/jfrog-docker-example-image:${{ github.run_number }}
-        run: |
-          # Ausführlicher Scan mit JSON-Output
-          jf docker scan $IMAGE_NAME \
-            --format json \
-            --fail-build \
-            --min-severity high \
-            --output scan-results.json
+      # - name: Run Xray Scan
+      #   env:
+      #     IMAGE_NAME: trial3i8n2w.jfrog.io/petclinic-docker/jfrog-docker-example-image:${{ github.run_number }}
+      #   run: |
+      #     # Ausführlicher Scan mit JSON-Output
+      #     jf docker scan $IMAGE_NAME \
+      #       --format json \
+      #       --fail-build \
+      #       --min-severity high \
+      #       --output scan-results.json
     
-          # Archivierung der Scan-Ergebnisse
-          if [ -f scan-results.json ]; then
-            echo "Scan results are stored under scan-results.json"
-          fi
+      #     # Archivierung der Scan-Ergebnisse
+      #     if [ -f scan-results.json ]; then
+      #       echo "Scan results are stored under scan-results.json"
+      #     fi
 
 
 
@@ -55,7 +55,9 @@ jobs:
           # Sammeln aller relevanten Build-Informationen
           jf rt build-add-git
           jf rt build-collect-env
-    
+          jf rt build-publish
+
+
           # Veröffentlichen mit erweiterten Metadaten
           #jf rt build-publish \
           #  --build-name=$JFROG_CLI_BUILD_NAME \
