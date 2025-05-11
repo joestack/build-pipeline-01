@@ -1,0 +1,55 @@
+name: Docker Image Scan with JFrog Xray
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup JFrog CLI
+        uses: jfrog/setup-jfrog-cli@v4
+        env:
+          JF_URL: ${{ vars.JF_URL }}
+          JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+
+      - name: Scan Docker Image
+        env:
+          IMAGE_NAME: trial3i8n2w.jfrog.io/petclinic-docker/jfrog-docker-example-image:${{ github.run_number }}
+        run: |
+          # Führe Xray Scan durch und speichere Ergebnisse als JSON
+          jf docker scan $IMAGE_NAME --format=json > xray-results.json
+
+      - name: Generate Scan Report
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const results = JSON.parse(fs.readFileSync('xray-results.json', 'utf8'));
+            
+            let summary = `## JFrog Xray Scan Ergebnisse\n\n`;
+            summary += `### Gefundene Schwachstellen:\n`;
+            summary += `- Kritisch: ${results.summary.critical || 0}\n`;
+            summary += `- Hoch: ${results.summary.high || 0}\n`;
+            summary += `- Mittel: ${results.summary.medium || 0}\n`;
+            summary += `- Niedrig: ${results.summary.low || 0}\n\n`;
+            
+            if (results.vulnerabilities) {
+              summary += `### Details:\n`;
+              results.vulnerabilities.forEach(vuln => {
+                summary += `- **${vuln.severity}**: ${vuln.id} - ${vuln.description}\n`;
+              });
+            }
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
